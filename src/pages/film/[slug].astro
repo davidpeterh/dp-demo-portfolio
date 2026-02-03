@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { films, getFilmBySlug } from '../../lib/films';
+import FilmNav from '../../components/film/FilmNav.astro';
+import FilmHero from '../../components/film/FilmHero.astro';
+import FilmTrailer from '../../components/film/FilmTrailer.astro';
+import FilmCredits from '../../components/film/FilmCredits.astro';
+import FilmStills from '../../components/film/FilmStills.astro';
+
+export function getStaticPaths() {
+  return films.map((film) => ({
+    params: { slug: film.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const film = getFilmBySlug(slug);
+
+if (!film) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout title={`${film.title} — David Peter Hansen`} description={film.logline}>
+  <main class="min-h-screen bg-background">
+    <FilmNav />
+    <FilmHero film={film} />
+    <FilmTrailer film={film} />
+    <FilmCredits film={film} />
+    <FilmStills film={film} />
+
+    <div class="px-6 lg:px-12 py-16 border-t border-border">
+      <div class="mx-auto max-w-7xl text-center">
+        <p class="text-sm text-muted-foreground">
+          {film.year} — {film.category} — {film.runtime}
+        </p>
+      </div>
+    </div>
+  </main>
+</Layout>

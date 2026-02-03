@@ -1,0 +1,64 @@
+---
+import type { Film } from '../../lib/films';
+
+interface Props {
+  film: Film;
+}
+
+const { film } = Astro.props;
+const trailerId = `trailer-${film.slug}`;
+---
+
+<section class="px-6 lg:px-12 py-24 lg:py-32 border-t border-border">
+  <div class="mx-auto max-w-7xl">
+    <h2 class="text-sm text-muted-foreground tracking-wide mb-8">
+      Trailer
+    </h2>
+
+    <div class="relative aspect-video bg-muted overflow-hidden" id={trailerId}>
+      <div class="trailer-preview">
+        <img
+          src={film.heroImage}
+          alt={`${film.title} trailer thumbnail`}
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-foreground/20"></div>
+        <button
+          class="play-trailer-btn absolute inset-0 flex items-center justify-center group cursor-pointer"
+          aria-label="Play trailer"
+          data-trailer-url={film.trailerUrl}
+          data-container-id={trailerId}
+        >
+          <div class="w-20 h-20 rounded-full bg-background/90 flex items-center justify-center group-hover:bg-background transition-colors">
+            <svg class="w-8 h-8 text-foreground ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.play-trailer-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const button = e.currentTarget as HTMLButtonElement;
+      const containerId = button.dataset.containerId;
+      const trailerUrl = button.dataset.trailerUrl;
+      const container = document.getElementById(containerId!);
+
+      if (container && trailerUrl) {
+        container.innerHTML = `
+          <iframe
+            src="${trailerUrl}?autoplay=1"
+            title="Trailer"
+            class="absolute inset-0 w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        `;
+      }
+    });
+  });
+</script>

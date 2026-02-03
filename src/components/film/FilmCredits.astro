@@ -1,0 +1,38 @@
+---
+import type { Film } from '../../lib/films';
+
+interface Props {
+  film: Film;
+}
+
+const { film } = Astro.props;
+---
+
+<section class="px-6 lg:px-12 py-24 lg:py-32 border-t border-border">
+  <div class="mx-auto max-w-7xl">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div>
+        <h2 class="text-sm text-muted-foreground tracking-wide mb-8">
+          Synopsis
+        </h2>
+        <p class="font-serif text-lg md:text-xl text-foreground leading-relaxed">
+          {film.synopsis}
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-sm text-muted-foreground tracking-wide mb-8">
+          Credits
+        </h2>
+        <dl class="space-y-4">
+          {film.credits.map((credit) => (
+            <div class="flex justify-between items-baseline border-b border-border pb-4">
+              <dt class="text-sm text-muted-foreground">{credit.role}</dt>
+              <dd class="text-foreground">{credit.name}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>

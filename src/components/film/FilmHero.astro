@@ -1,0 +1,46 @@
+---
+import type { Film } from '../../lib/films';
+
+interface Props {
+  film: Film;
+}
+
+const { film } = Astro.props;
+---
+
+<section class="relative">
+  <div class="relative h-[70vh] min-h-[500px]">
+    <img
+      src={film.heroImage}
+      alt={film.title}
+      class="absolute inset-0 w-full h-full object-cover"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+  </div>
+
+  <div class="relative px-6 lg:px-12 -mt-48 pb-16">
+    <div class="mx-auto max-w-7xl">
+      <p class="text-sm text-muted-foreground mb-4 tracking-wide">
+        {film.category} — {film.year}
+      </p>
+      <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl font-semibold leading-none tracking-tight text-foreground mb-8 uppercase">
+        {film.title}
+      </h1>
+      <p class="font-serif text-xl md:text-2xl text-foreground/80 max-w-2xl leading-relaxed">
+        {film.logline}
+      </p>
+
+      {film.awards && film.awards.length > 0 && (
+        <div class="mt-12 flex flex-wrap gap-4">
+          {film.awards.map((award) => (
+            <span
+              class="text-xs text-muted-foreground border border-border px-3 py-2 tracking-wide"
+            >
+              {award}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</section>

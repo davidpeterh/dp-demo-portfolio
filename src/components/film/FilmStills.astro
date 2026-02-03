@@ -1,0 +1,60 @@
+---
+import type { Film } from '../../lib/films';
+
+interface Props {
+  film: Film;
+}
+
+const { film } = Astro.props;
+---
+
+<section class="px-6 lg:px-12 py-24 lg:py-32 border-t border-border">
+  <div class="mx-auto max-w-7xl">
+    <h2 class="text-sm text-muted-foreground tracking-wide mb-8">
+      Stills
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 stills-grid">
+      {film.stills.map((still, index) => (
+        <div
+          class="relative aspect-[3/2] overflow-hidden bg-muted still-item"
+        >
+          <img
+            src={still}
+            alt={`${film.title} still ${index + 1}`}
+            class="absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-90"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.stills-grid').forEach((grid) => {
+    const items = grid.querySelectorAll('.still-item');
+
+    items.forEach((item) => {
+      item.addEventListener('mouseenter', () => {
+        items.forEach((otherItem) => {
+          const img = otherItem.querySelector('img');
+          if (otherItem === item) {
+            img?.classList.add('scale-105', 'opacity-100');
+            img?.classList.remove('opacity-90');
+          } else {
+            img?.classList.add('opacity-50');
+            img?.classList.remove('opacity-90');
+          }
+        });
+      });
+
+      item.addEventListener('mouseleave', () => {
+        items.forEach((otherItem) => {
+          const img = otherItem.querySelector('img');
+          img?.classList.remove('scale-105', 'opacity-100', 'opacity-50');
+          img?.classList.add('opacity-90');
+        });
+      });
+    });
+  });
+</script>
