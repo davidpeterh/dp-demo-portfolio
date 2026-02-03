@@ -1,0 +1,124 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: post,
+  }));
+}
+
+const post = Astro.props;
+const { Content } = await post.render();
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<Layout
+  title={`${post.data.title} | David Peter Hansen`}
+  description={post.data.description}
+  image={post.data.image}
+>
+  <Header />
+  <main class="pt-24 lg:pt-32 pb-20">
+    <article class="mx-auto max-w-3xl px-6 lg:px-12">
+      <header class="mb-12">
+        <a
+          href="/blog"
+          class="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Blog
+        </a>
+        <time class="block text-sm text-muted-foreground mb-4">
+          {formatDate(post.data.pubDate)}
+        </time>
+        <h1 class="font-serif text-3xl lg:text-5xl font-light tracking-tight mb-6">
+          {post.data.title}
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          {post.data.description}
+        </p>
+      </header>
+
+      {post.data.image && (
+        <div class="aspect-video mb-12 overflow-hidden bg-muted">
+          <img
+            src={post.data.image}
+            alt={post.data.imageAlt || post.data.title}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      <div class="prose prose-lg max-w-none">
+        <Content />
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Layout>
+
+<style is:global>
+  .prose {
+    color: var(--foreground);
+  }
+  .prose h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 1.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .prose h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 1.35rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose p {
+    margin-bottom: 1.25rem;
+    line-height: 1.75;
+    color: var(--foreground);
+  }
+  .prose strong {
+    font-weight: 600;
+  }
+  .prose ul, .prose ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+  .prose li {
+    margin-bottom: 0.5rem;
+    line-height: 1.75;
+  }
+  .prose a {
+    color: var(--foreground);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose a:hover {
+    color: var(--muted-foreground);
+  }
+  .prose blockquote {
+    border-left: 2px solid var(--border);
+    padding-left: 1.5rem;
+    font-style: italic;
+    color: var(--muted-foreground);
+    margin: 1.5rem 0;
+  }
+</style>
