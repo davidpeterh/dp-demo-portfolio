@@ -2,9 +2,46 @@
 interface Props {
   title: string;
   description?: string;
+  image?: string;
+  canonical?: string;
 }
 
-const { title, description = "Award-winning film director and producer based in New York. Specializing in narrative features, documentaries, and commercial work." } = Astro.props;
+const defaultDescription = "David Peter Hansen is an award-winning documentary film director and producer based in New York City. Specializing in documentary films, narrative features, and commercial production.";
+const {
+  title,
+  description = defaultDescription,
+  image = "/images/portrait.jpg",
+  canonical
+} = Astro.props;
+
+const siteUrl = "https://davidpeterhansen.com";
+const fullImageUrl = image.startsWith("http") ? image : `${siteUrl}${image}`;
+const canonicalUrl = canonical || Astro.url.href;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "David Peter Hansen",
+  "jobTitle": "Film Director and Producer",
+  "description": defaultDescription,
+  "url": siteUrl,
+  "image": `${siteUrl}/images/portrait.jpg`,
+  "sameAs": [],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "New York",
+    "addressRegion": "NY",
+    "addressCountry": "US"
+  },
+  "knowsAbout": [
+    "Documentary Filmmaking",
+    "Film Directing",
+    "Film Production",
+    "Documentary Production",
+    "Cinematography",
+    "Video Production"
+  ]
+};
 ---
 
 <!doctype html>
@@ -12,13 +49,42 @@ const { title, description = "Award-winning film director and producer based in 
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
     <meta name="description" content={description} />
+    <meta name="keywords" content="David Peter Hansen, film director, documentary filmmaker, producer, New York filmmaker, NYC director, documentary producer, film production, Antytila, Ukrainian documentary" />
+    <meta name="author" content="David Peter Hansen" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullImageUrl} />
+    <meta property="og:site_name" content="David Peter Hansen" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={fullImageUrl} />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+    <!-- Favicons -->
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="icon" type="image/png" href="/icon-light-32x32.png" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/png" href="/icon-dark-32x32.png" media="(prefers-color-scheme: dark)" />
     <link rel="apple-touch-icon" href="/apple-icon.png" />
+
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
   </head>
   <body class="font-sans">
     <slot />

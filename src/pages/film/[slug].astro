@@ -21,7 +21,11 @@ if (!film) {
 }
 ---
 
-<Layout title={`${film.title} — David Peter Hansen`} description={film.logline}>
+<Layout
+  title={`${film.title} | ${film.category} by David Peter Hansen`}
+  description={film.logline}
+  image={film.heroImage}
+>
   <main class="min-h-screen bg-background">
     <FilmNav />
     <FilmHero film={film} />
